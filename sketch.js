@@ -1,19 +1,28 @@
 let faceapi;
 let detections = [];
+let begin = false;
 
 let video;
 let canvas;
 
-function setup() {
-  const canvasElement = document.getElementById('canvas');
-  canvas = createCanvas(640, 360); // 고정된 크기 설정
-  canvas.id("canvas");
-  canvas.parent('video-container'); // 캔버스를 비디오 컨테이너에 추가
+let classifier;
+let modelURL = 'https://teachablemachine.withgoogle.com/models/2jhn_4qDg/';
 
-  video = createCapture(VIDEO); // 비디오 오브젝트 생성
-  video.id("video");
-  video.size(640, 360); // 고정된 크기 설정
-  video.parent('video-container'); // 비디오를 비디오 컨테이너에 추가
+function preload() {
+  console.log('Preloading model...');
+  classifier = ml5.imageClassifier(modelURL + 'model.json', () => {
+    console.log('Model loaded.');
+  });
+}
+
+function setup() {
+  canvas = createCanvas(640, 360);
+  canvas.id("canvas");
+  canvas.parent('video-container');
+
+  video = createCapture(VIDEO);
+  video.size(640, 360);
+  video.parent('video-container');
 
   const faceOptions = {
     withLandmarks: true,
@@ -22,11 +31,12 @@ function setup() {
     minConfidence: 0.5
   };
 
-  faceapi = ml5.faceApi(video, faceOptions, faceReady); // 모델 초기화
+  faceapi = ml5.faceApi(video, faceOptions, faceReady);
 }
 
 function faceReady() {
-  faceapi.detect(gotFaces); // 얼굴 인식 시작
+  console.log('Face API model loaded');
+  faceapi.detect(gotFaces);
 }
 
 function gotFaces(error, result) {
@@ -37,12 +47,43 @@ function gotFaces(error, result) {
 
   detections = result;
 
-  clear(); // 투명한 배경 그리기
-  drawBoxs(detections); // 얼굴 주위 상자 그리기
-  drawLandmarks(detections); // 얼굴 랜드마크 그리기
-  drawExpressions(detections); // 얼굴 표정 그리기
+  clear();
+  drawBoxs(detections);
+  drawLandmarks(detections);
+  drawExpressions(detections);
 
-  faceapi.detect(gotFaces); // 얼굴 인식 반복 호출
+  faceapi.detect(gotFaces);
+}
+
+function draw() {
+  if (!begin) {
+    background(0, 155, 255);
+    textSize(100);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    text("기다려주세요", width / 2, height / 2);
+  } else {
+    clear();
+    image(video, 0, 0, width, height);
+
+    if (detections.length > 0) {
+      for (let i = 0; i < detections.length; i++) {
+        let alignedRect = detections[i].alignedRect;
+        let x = alignedRect._box._x;
+        let y = alignedRect._box._y;
+        let boxWidth = alignedRect._box._width;
+        let boxHeight = alignedRect._box._height;
+
+        noFill();
+        stroke(0, 255, 0);
+        strokeWeight(2);
+        rect(x, y, boxWidth, boxHeight);
+
+        let faceImage = video.get(x, y, boxWidth, boxHeight);
+        classifier.classify(faceImage, gotClassification);
+      }
+    }
+  }
 }
 
 function drawBoxs(detections) {
@@ -71,8 +112,18 @@ function drawLandmarks(detections) {
 }
 
 function drawExpressions(detections) {
-  if (detections.length > 0) {
-    let { neutral, happy, angry, sad, disgusted, surprised, fearful } = detections[0].expressions;
+  if (detections.length > 0 && detections[0].expressions) {
+    let {
+      neutral,
+      happy,
+      angry,
+      sad,
+      disgusted,
+      surprised,
+      fearful
+    } = detections[0].expressions;
+    begin = true;
+    console.log('Expressions detected:', neutral, happy, angry, sad, disgusted, surprised, fearful);
 
     document.getElementById('neutral').innerText = nf(neutral * 100, 2, 2) + "%";
     document.getElementById('happiness').innerText = nf(happy * 100, 2, 2) + "%";
@@ -81,6 +132,7 @@ function drawExpressions(detections) {
     document.getElementById('disgusted').innerText = nf(disgusted * 100, 2, 2) + "%";
     document.getElementById('surprised').innerText = nf(surprised * 100, 2, 2) + "%";
     document.getElementById('fear').innerText = nf(fearful * 100, 2, 2) + "%";
+
   } else {
     document.getElementById('neutral').innerText = "";
     document.getElementById('happiness').innerText = "";
@@ -90,4 +142,19 @@ function drawExpressions(detections) {
     document.getElementById('surprised').innerText = "";
     document.getElementById('fear').innerText = "";
   }
+}
+
+function gotClassification(error, results) {
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  document.getElementById('label').innerText = results[0].label;
+  document.getElementById('confidence').innerText = nf(results[0].confidence * 100, 2, 2) + '%';
+
+  fill(255, 0, 0);
+  noStroke();
+  textSize(24);
+  text(results[0].label, 10, height - 10);
 }
