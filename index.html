@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
-  <title>face-api</title>
+  <title>mom's mom</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ml5@latest/dist/ml5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
+ 
   <link rel="stylesheet" type="text/css" href="style.css">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ml5@0.10.0/dist/ml5.min.js"></script>
 </head>
+
 <body>
+
   <div id="main-container">
-    <div id="description-container">
-      <div class="description left">
-        <p>I always thought my mom was born in Gimcheon.</p>
-        <p>But in a single phone call, her information changed in an instant.</p>
-        <p>A daughter born to my mom’s mom who came to Seoul.</p>
-        <p>A magnolia tree gifted by my mom’s mom’s mom for them to grow up together.</p>
-        <p>Memory, like teleportation, changes from one thing to another in an instant.</p>
-        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-        <p>Memory is something that can become this or that in a moment through the language of the person remembering.</p>
-        <p>Jumping through spaces involves feeling the distance and not losing the sense of movement,</p>
-        <p>but involuntary teleportation is disorienting and nauseating.</p>
-        <p>I lose my direction and position.</p>
-        <p>Another line to fill the height properly.</p>
-      </div>
+    <div id="description">
+      <p class="left">____________________________I always thought my mom was born in Gimcheon.__________________________________</p>
+      <p class="right">_________________But in a single phone call, her information changed in an instant._______________________</p>
+      <p class="left">________________________A daughter born to my mom’s mom who came to Seoul._________________________________</p>
+      <p class="right">___________________A magnolia tree gifted by my mom’s mom’s mom for them to grow up together._____________</p>
+      <p class="left">_________________Memory, like teleportation, changes from one thing to another in an instant.______________</p>
+      <p class="right">_________________mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom______________</p>
+      <p class="left">Memory is something that can become this or that in a moment through the language of the person remembering.</p>
+      <p class="right">__________Jumping through spaces involves feeling the distance and not losing the sense of movement_______</p>
+      <p class="left">_______________________but involuntary teleportation is disorienting and nauseating._______________________</p>
+      <p class="right">__________________________________I lose my direction and position._______________________________________</p>
     </div>
     <div id="video-container">
       <video id="video" autoplay playsinline></video>
       <canvas id="canvas"></canvas>
+      <img id="magnolia-image" src="magnolia.jpg" style="display: none;"/>
+      <div id="label">
+        <p>Label: <span id="label-result"></span></p>
+      </div>
       <div id="emotion-results">
         <p>neutral: <span id="neutral"></span></p>
         <p>happiness: <span id="happiness"></span></p>
@@ -42,7 +49,8 @@
         <p>fear: <span id="fear"></span></p>
       </div>
     </div>
+    <script src="sketch.js"></script>
   </div>
-  <script src="sketch.js"></script>
 </body>
+
 </html>

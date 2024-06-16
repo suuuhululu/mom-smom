@@ -1,15 +1,15 @@
 let faceapi;
 let detections = [];
-let classifier;
+
 let video;
 let canvas;
-let label = "";
+let classifier;
+let label = 'waiting';
 
-let imageModelURL = 'https://teachablemachine.withgoogle.com/models/2jhn_4qDg/model.json';
+let begin = false;
 
-// Load the model first
 function preload() {
-  classifier = ml5.imageClassifier(imageModelURL);
+  classifier = ml5.imageClassifier('my_model/model.json');
 }
 
 function setup() {
@@ -21,45 +21,31 @@ function setup() {
   video = createCapture(VIDEO);
   video.id("video");
   video.size(640, 360);
-  video.hide(); // 비디오 숨김
   video.parent('video-container');
 
   const faceOptions = {
     withLandmarks: true,
     withExpressions: true,
-    withDescriptors: false,
+    withDescriptors: true,
     minConfidence: 0.5
   };
 
   faceapi = ml5.faceApi(video, faceOptions, faceReady);
+
   classifyVideo();
 }
 
 function draw() {
-  background(0);
-  image(video, 0, 0, width, height); // 비디오 프레임을 캔버스에 그림
-  drawBoxs(detections);
-  drawLandmarks(detections);
-  drawExpressions(detections);
-  textSize(16);
-  textAlign(CENTER);
+  background(0, 155, 255);
+  textSize(50);
   fill(255);
-  text(label, width / 2, height - 4);
-}
+  textAlign(CENTER, CENTER);
+  text("find mom's face", width / 2, height / 2);
 
-// Get a prediction for the current video frame
-function classifyVideo() {
-  classifier.classify(video, gotResult);
-}
-
-// When we get a result
-function gotResult(error, results) {
-  if (error) {
-    console.error(error);
-    return;
+  if (begin) {
+    clear();
   }
-  label = results[0].label;
-  classifyVideo();
+
 }
 
 function faceReady() {
@@ -71,7 +57,14 @@ function gotFaces(error, result) {
     console.log(error);
     return;
   }
+
   detections = result;
+
+  clear();
+  drawBoxs(detections);
+  drawLandmarks(detections);
+  drawExpressions(detections);
+
   faceapi.detect(gotFaces);
 }
 
@@ -101,8 +94,9 @@ function drawLandmarks(detections) {
 }
 
 function drawExpressions(detections) {
-  if (detections.length > 0 && detections[0].expressions) {
+  if (detections.length > 0) {
     let { neutral, happy, angry, sad, disgusted, surprised, fearful } = detections[0].expressions;
+    begin = true;
     document.getElementById('neutral').innerText = nf(neutral * 100, 2, 2) + "%";
     document.getElementById('happiness').innerText = nf(happy * 100, 2, 2) + "%";
     document.getElementById('anger').innerText = nf(angry * 100, 2, 2) + "%";
@@ -110,6 +104,12 @@ function drawExpressions(detections) {
     document.getElementById('disgusted').innerText = nf(disgusted * 100, 2, 2) + "%";
     document.getElementById('surprised').innerText = nf(surprised * 100, 2, 2) + "%";
     document.getElementById('fear').innerText = nf(fearful * 100, 2, 2) + "%";
+
+    if (label === 'mother' && angry > 0.5) {
+      document.getElementById('magnolia-image').style.display = 'block';
+    } else {
+      document.getElementById('magnolia-image').style.display = 'none';
+    }
   } else {
     document.getElementById('neutral').innerText = "";
     document.getElementById('happiness').innerText = "";
@@ -118,5 +118,20 @@ function drawExpressions(detections) {
     document.getElementById('disgusted').innerText = "";
     document.getElementById('surprised').innerText = "";
     document.getElementById('fear').innerText = "";
+    document.getElementById('magnolia-image').style.display = 'none';
   }
+}
+
+function classifyVideo() {
+  classifier.classify(video, gotResults);
+}
+
+function gotResults(error, results) {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  label = results[0].label;
+  classifyVideo();
+  document.getElementById('label-result').innerText = label;
 }
