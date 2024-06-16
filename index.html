@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <title>face-api</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ml5@latest/dist/ml5.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-
 <body>
   <div id="main-container">
-    <div id="description">
-      <p class="left">I always thought my mom was born in Gimcheon.</p>
-      <p class="left">But in a single phone call, her information changed in an instant.</p>
-      <p class="left">A daughter born to my mom’s mom who came to Seoul.</p>
-      <p class="left">A magnolia tree gifted by my mom’s mom’s mom for them to grow up together.</p>
-      <p class="left">Memory, like teleportation, changes from one thing to another in an instant.</p>
-      <p class="left">my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-      <p class="left">my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-      <p class="left">my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-      <p class="left">my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-      <p class="left">my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
-      <p class="right">Memory is something that can become this or that in a moment through the language of the person remembering.</p>
-      <p class="right">Jumping through spaces involves feeling the distance and not losing the sense of movement,</p>
-      <p class="right">but involuntary teleportation is disorienting and nauseating.</p>
-      <p class="right">I lose my direction and position.</p>
-      <p class="right">Another line to fill the height properly.</p>
+    <div id="description-container">
+      <div class="description left">
+        <p>I always thought my mom was born in Gimcheon.</p>
+        <p>But in a single phone call, her information changed in an instant.</p>
+        <p>A daughter born to my mom’s mom who came to Seoul.</p>
+        <p>A magnolia tree gifted by my mom’s mom’s mom for them to grow up together.</p>
+        <p>Memory, like teleportation, changes from one thing to another in an instant.</p>
+        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
+        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
+        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
+        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
+        <p>my mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's mom's</p>
+        <p>Memory is something that can become this or that in a moment through the language of the person remembering.</p>
+        <p>Jumping through spaces involves feeling the distance and not losing the sense of movement,</p>
+        <p>but involuntary teleportation is disorienting and nauseating.</p>
+        <p>I lose my direction and position.</p>
+        <p>Another line to fill the height properly.</p>
+      </div>
     </div>
     <div id="video-container">
       <video id="video" autoplay playsinline></video>
@@ -42,7 +42,7 @@
         <p>fear: <span id="fear"></span></p>
       </div>
     </div>
+  </div>
   <script src="sketch.js"></script>
 </body>
-
 </html>

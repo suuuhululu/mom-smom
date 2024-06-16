@@ -1,32 +1,69 @@
 let faceapi;
 let detections = [];
-
+let classifier;
 let video;
 let canvas;
+let label = "";
+
+let imageModelURL = 'https://teachablemachine.withgoogle.com/models/2jhn_4qDg/model.json';
+
+// Load the model first
+function preload() {
+  classifier = ml5.imageClassifier(imageModelURL);
+}
 
 function setup() {
   const canvasElement = document.getElementById('canvas');
-  canvas = createCanvas(640, 360); // 고정된 크기 설정
+  canvas = createCanvas(640, 360);
   canvas.id("canvas");
-  canvas.parent('video-container'); // 캔버스를 비디오 컨테이너에 추가
+  canvas.parent('video-container');
 
-  video = createCapture(VIDEO); // 비디오 오브젝트 생성
+  video = createCapture(VIDEO);
   video.id("video");
-  video.size(640, 360); // 고정된 크기 설정
-  video.parent('video-container'); // 비디오를 비디오 컨테이너에 추가
+  video.size(640, 360);
+  video.hide(); // 비디오 숨김
+  video.parent('video-container');
 
   const faceOptions = {
     withLandmarks: true,
     withExpressions: true,
-    withDescriptors: true,
+    withDescriptors: false,
     minConfidence: 0.5
   };
 
-  faceapi = ml5.faceApi(video, faceOptions, faceReady); // 모델 초기화
+  faceapi = ml5.faceApi(video, faceOptions, faceReady);
+  classifyVideo();
+}
+
+function draw() {
+  background(0);
+  image(video, 0, 0, width, height); // 비디오 프레임을 캔버스에 그림
+  drawBoxs(detections);
+  drawLandmarks(detections);
+  drawExpressions(detections);
+  textSize(16);
+  textAlign(CENTER);
+  fill(255);
+  text(label, width / 2, height - 4);
+}
+
+// Get a prediction for the current video frame
+function classifyVideo() {
+  classifier.classify(video, gotResult);
+}
+
+// When we get a result
+function gotResult(error, results) {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  label = results[0].label;
+  classifyVideo();
 }
 
 function faceReady() {
-  faceapi.detect(gotFaces); // 얼굴 인식 시작
+  faceapi.detect(gotFaces);
 }
 
 function gotFaces(error, result) {
@@ -34,15 +71,8 @@ function gotFaces(error, result) {
     console.log(error);
     return;
   }
-
   detections = result;
-
-  clear(); // 투명한 배경 그리기
-  drawBoxs(detections); // 얼굴 주위 상자 그리기
-  drawLandmarks(detections); // 얼굴 랜드마크 그리기
-  drawExpressions(detections); // 얼굴 표정 그리기
-
-  faceapi.detect(gotFaces); // 얼굴 인식 반복 호출
+  faceapi.detect(gotFaces);
 }
 
 function drawBoxs(detections) {
@@ -71,9 +101,8 @@ function drawLandmarks(detections) {
 }
 
 function drawExpressions(detections) {
-  if (detections.length > 0) {
+  if (detections.length > 0 && detections[0].expressions) {
     let { neutral, happy, angry, sad, disgusted, surprised, fearful } = detections[0].expressions;
-
     document.getElementById('neutral').innerText = nf(neutral * 100, 2, 2) + "%";
     document.getElementById('happiness').innerText = nf(happy * 100, 2, 2) + "%";
     document.getElementById('anger').innerText = nf(angry * 100, 2, 2) + "%";
